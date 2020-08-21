@@ -1,3 +1,3 @@
 ### Hey there 👋
 
-🔎 https://github.com/CypherPoet/Swifty-Portfolio.
+👉 https://github.com/CypherPoet/Swifty-Portfolio.
