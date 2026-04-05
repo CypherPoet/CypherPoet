@@ -1,0 +1,1411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHub Profile README Playground</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0d1117;
+    --bg-surface: #161b22;
+    --bg-raised: #1c2128;
+    --bg-input: #21262d;
+    --border: #30363d;
+    --border-focus: #58a6ff;
+    --text: #e6edf3;
+    --text-muted: #8b949e;
+    --text-subtle: #6e7681;
+    --accent: #58a6ff;
+    --accent-hover: #79c0ff;
+    --green: #3fb950;
+    --orange: #d29922;
+    --red: #f85149;
+    --font-ui: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    --font-mono: 'SF Mono', SFMono-Regular, ui-monospace, 'Cascadia Code', Menlo, monospace;
+    --controls-width: 460px;
+  }
+
+  body {
+    font-family: var(--font-ui);
+    background: var(--bg);
+    color: var(--text);
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Top bar */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .topbar h1 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+  .topbar h1 span { color: var(--text-muted); font-weight: 400; }
+
+  /* Presets bar */
+  .presets-bar {
+    display: flex;
+    gap: 6px;
+  }
+  .preset-btn {
+    padding: 5px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--bg-raised);
+    color: var(--text-muted);
+    font-size: 12px;
+    font-family: var(--font-ui);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .preset-btn:hover { border-color: var(--border-focus); color: var(--text); }
+  .preset-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(56,139,253,0.1); }
+
+  /* Main layout */
+  .main {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  /* Controls panel */
+  .controls {
+    width: var(--controls-width);
+    min-width: var(--controls-width);
+    overflow-y: auto;
+    border-right: 1px solid var(--border);
+    background: var(--bg-surface);
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .controls::-webkit-scrollbar { width: 6px; }
+  .controls::-webkit-scrollbar-track { background: transparent; }
+  .controls::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* Control groups */
+  .ctrl-group {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg);
+    overflow: visible;
+    flex-shrink: 0;
+  }
+  .ctrl-group-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .ctrl-group-header:hover { background: var(--bg-raised); }
+  .ctrl-group-title {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+  }
+  .ctrl-group-toggle {
+    font-size: 10px;
+    color: var(--text-subtle);
+    transition: transform 0.2s;
+  }
+  .ctrl-group.collapsed .ctrl-group-toggle { transform: rotate(-90deg); }
+  .ctrl-group-body {
+    padding: 0 14px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .ctrl-group.collapsed .ctrl-group-body { display: none; }
+
+  /* Control rows */
+  .ctrl-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .ctrl-row label {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+  .ctrl-row-inline {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .ctrl-row-inline label { flex-shrink: 0; font-size: 12px; }
+
+  /* Inputs */
+  input[type="text"], textarea, select {
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    padding: 8px 10px;
+    font-size: 13px;
+    font-family: var(--font-ui);
+    width: 100%;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  input[type="text"]:focus, textarea:focus, select:focus {
+    border-color: var(--border-focus);
+  }
+  textarea { resize: vertical; min-height: 100px; font-family: var(--font-mono); font-size: 12px; line-height: 1.5; word-break: break-word; }
+  select { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%238b949e'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 28px; }
+
+  /* Toggle switch */
+  .toggle-switch {
+    position: relative;
+    width: 36px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+  .toggle-switch input { opacity: 0; width: 0; height: 0; }
+  .toggle-slider {
+    position: absolute;
+    inset: 0;
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .toggle-slider::before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 14px;
+    height: 14px;
+    background: var(--text-muted);
+    border-radius: 50%;
+    transition: all 0.2s;
+  }
+  .toggle-switch input:checked + .toggle-slider { background: var(--accent); border-color: var(--accent); }
+  .toggle-switch input:checked + .toggle-slider::before { transform: translateX(16px); background: white; }
+
+  /* Segmented control */
+  .segmented {
+    display: inline-flex;
+    flex-wrap: wrap;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    background: var(--bg-input);
+  }
+  .segmented button {
+    padding: 6px 14px;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 12px;
+    font-family: var(--font-ui);
+    cursor: pointer;
+    transition: all 0.15s;
+    border-right: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  .segmented button:last-child { border-right: none; }
+  .segmented button.active { background: var(--accent); color: white; }
+  .segmented button:hover:not(.active) { color: var(--text); }
+
+  /* Chip selector */
+  .chip-group { display: flex; flex-wrap: wrap; gap: 4px; }
+  .chip {
+    padding: 3px 10px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: var(--bg-input);
+    color: var(--text-muted);
+    font-size: 11px;
+    font-family: var(--font-ui);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .chip:hover { border-color: var(--text-muted); color: var(--text); }
+  .chip.active { border-color: var(--accent); color: var(--accent); background: rgba(56,139,253,0.1); }
+
+  /* Right panel */
+  .right-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--bg);
+  }
+  .panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 16px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-surface);
+    flex-shrink: 0;
+  }
+  .copy-btn {
+    padding: 5px 14px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--bg-raised);
+    color: var(--text);
+    font-size: 12px;
+    font-family: var(--font-ui);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .copy-btn.copied { border-color: var(--green); color: var(--green); }
+
+  .panel-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+  }
+  .panel-content::-webkit-scrollbar { width: 6px; }
+  .panel-content::-webkit-scrollbar-track { background: transparent; }
+  .panel-content::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* GitHub-style preview */
+  .preview-content {
+    max-width: 800px;
+    margin: 0 auto;
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--text);
+  }
+  .preview-content h1, .preview-content h2, .preview-content h3 {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.3em;
+    margin-top: 24px;
+    margin-bottom: 16px;
+    font-weight: 600;
+    line-height: 1.25;
+  }
+  .preview-content h1 { font-size: 2em; }
+  .preview-content h2 { font-size: 1.5em; }
+  .preview-content h3 { font-size: 1.25em; border-bottom: none; }
+  .preview-content p { margin-bottom: 16px; }
+  .preview-content img { max-width: 100%; height: auto; }
+  .preview-content a { color: var(--accent); text-decoration: none; }
+  .preview-content a:hover { text-decoration: underline; }
+  .preview-content ul, .preview-content ol { padding-left: 2em; margin-bottom: 16px; }
+  .preview-content li { margin-bottom: 4px; }
+  .preview-content hr { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+  .preview-content table { border-collapse: collapse; margin-bottom: 16px; }
+  .preview-content td, .preview-content th { padding: 6px 13px; border: 1px solid var(--border); }
+  .preview-content details { margin-bottom: 16px; }
+  .preview-content summary { cursor: pointer; font-weight: 600; margin-bottom: 8px; }
+  .preview-content details[open] summary { margin-bottom: 12px; }
+  .preview-content .text-center { text-align: center; }
+  .preview-content .badge-row { display: inline; }
+  .preview-content .badge-row img { display: inline-block; margin: 2px; }
+
+  /* Markdown view */
+  .markdown-content {
+    max-width: 800px;
+    margin: 0 auto;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text);
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+  .md-heading { color: var(--accent); }
+  .md-link { color: var(--green); }
+  .md-image { color: var(--orange); }
+  .md-html { color: var(--red); opacity: 0.8; }
+  .md-bullet { color: var(--accent); }
+  .md-hr { color: var(--text-subtle); }
+  .md-bold { color: var(--text); font-weight: 700; }
+
+  /* Editable list */
+  .editable-list { display: flex; flex-direction: column; gap: 4px; }
+  .editable-list-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .editable-list-item input { flex: 1; }
+  .list-remove-btn, .list-add-btn {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text-muted);
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 14px;
+    font-family: var(--font-ui);
+    flex-shrink: 0;
+    transition: all 0.15s;
+  }
+  .list-remove-btn:hover { border-color: var(--red); color: var(--red); }
+  .list-add-btn {
+    width: 100%;
+    height: 26px;
+    border-style: dashed;
+    font-size: 12px;
+  }
+  .list-add-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .social-link-card {
+    background: var(--bg-raised);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .social-link-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .social-link-row input { flex: 1; }
+
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<!-- Top Bar -->
+<div class="topbar">
+  <h1>README Playground <span>/ CypherPoet</span></h1>
+  <div class="presets-bar">
+    <button class="preset-btn" onclick="applyPreset('minimal')">Minimal</button>
+    <button class="preset-btn" onclick="applyPreset('developer-card')">Developer Card</button>
+    <button class="preset-btn" onclick="applyPreset('badge-wall')">Badge Wall</button>
+    <button class="preset-btn" onclick="applyPreset('dashboard')">Dashboard</button>
+    <button class="preset-btn" onclick="applyPreset('storyteller')">Storyteller</button>
+  </div>
+</div>
+
+<!-- Main Layout -->
+<div class="main">
+
+  <!-- Controls Panel -->
+  <div class="controls">
+
+    <!-- Header Section -->
+    <div class="ctrl-group" id="group-header">
+      <div class="ctrl-group-header" onclick="toggleGroup('group-header')">
+        <span class="ctrl-group-title">Header</span>
+        <span class="ctrl-group-toggle">▼</span>
+      </div>
+      <div class="ctrl-group-body">
+        <div class="ctrl-row">
+          <label>Greeting Text</label>
+          <input type="text" id="greeting-text" value="👋 Greetings, fellow human 🧬" oninput="updateAll()">
+        </div>
+        <div class="ctrl-row">
+          <label>Subtitle</label>
+          <input type="text" id="subtitle-text" value="" placeholder="e.g. iOS Developer · Open Source Enthusiast" oninput="updateAll()">
+        </div>
+        <div class="ctrl-row">
+          <label>Style</label>
+          <div class="segmented" id="header-style">
+            <button class="active" onclick="setSegment(this, 'header-style', 'emoji-heading')">Emoji Heading</button>
+            <button onclick="setSegment(this, 'header-style', 'typing-svg')">Typing SVG</button>
+            <button onclick="setSegment(this, 'header-style', 'plain')">Plain</button>
+          </div>
+        </div>
+        <div class="ctrl-row">
+          <label>Alignment</label>
+          <div class="segmented" id="header-align">
+            <button onclick="setSegment(this, 'header-align', 'left')">Left</button>
+            <button class="active" onclick="setSegment(this, 'header-align', 'center')">Center</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- About Me Section -->
+    <div class="ctrl-group" id="group-about">
+      <div class="ctrl-group-header" onclick="toggleGroup('group-about')">
+        <span class="ctrl-group-title">About Me</span>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <label class="toggle-switch" onclick="event.stopPropagation()">
+            <input type="checkbox" id="about-enabled" onchange="updateAll()">
+            <span class="toggle-slider"></span>
+          </label>
+          <span class="ctrl-group-toggle">▼</span>
+        </div>
+      </div>
+      <div class="ctrl-group-body">
+        <div class="ctrl-row">
+          <label>Items (one per line, use emoji prefix)</label>
+          <textarea id="about-items" oninput="updateAll()" rows="5">🔭 I'm currently working on ...
+🌱 I'm currently learning ...
+💬 Ask me about ...
+📫 How to reach me: ...
+⚡ Fun fact: ...</textarea>
+        </div>
+        <div class="ctrl-row">
+          <label>Layout</label>
+          <div class="segmented" id="about-layout">
+            <button class="active" onclick="setSegment(this, 'about-layout', 'bullets')">Bullets</button>
+            <button onclick="setSegment(this, 'about-layout', 'table')">Two Columns</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Skills & Tech -->
+    <div class="ctrl-group" id="group-skills">
+      <div class="ctrl-group-header" onclick="toggleGroup('group-skills')">
+        <span class="ctrl-group-title">Skills & Tech</span>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <label class="toggle-switch" onclick="event.stopPropagation()">
+            <input type="checkbox" id="skills-enabled" onchange="updateAll()">
+            <span class="toggle-slider"></span>
+          </label>
+          <span class="ctrl-group-toggle">▼</span>
+        </div>
+      </div>
+      <div class="ctrl-group-body">
+        <div class="ctrl-row">
+          <label>Style</label>
+          <div class="segmented" id="skills-style">
+            <button class="active" onclick="setSegment(this, 'skills-style', 'shields')">Shields.io</button>
+            <button onclick="setSegment(this, 'skills-style', 'skill-icons')">Skill Icons</button>
+            <button onclick="setSegment(this, 'skills-style', 'text')">Text</button>
+          </div>
+        </div>
+        <div class="ctrl-row">
+          <label>Badge Style</label>
+          <select id="skills-badge-style" onchange="updateAll()">
+            <option value="for-the-badge">For the Badge</option>
+            <option value="flat">Flat</option>
+            <option value="flat-square">Flat Square</option>
+            <option value="plastic">Plastic</option>
+          </select>
+        </div>
+        <div class="ctrl-row">
+          <label>Skills (comma-separated)</label>
+          <textarea id="skills-list" oninput="updateAll()" rows="3">Swift,Python,JavaScript,TypeScript,React,SwiftUI,Xcode,Git</textarea>
+        </div>
+        <div class="ctrl-row">
+          <label>Badge Color</label>
+          <select id="skills-color" onchange="updateAll()">
+            <option value="">Default (per language)</option>
+            <option value="000000">Black</option>
+            <option value="0d1117">GitHub Dark</option>
+            <option value="1a1b27">Tokyo Night</option>
+            <option value="2b2d42">Slate</option>
+            <option value="ff6e96">Pink</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Widgets -->
+    <div class="ctrl-group" id="group-stats">
+      <div class="ctrl-group-header" onclick="toggleGroup('group-stats')">
+        <span class="ctrl-group-title">Stats Widgets</span>
+        <span class="ctrl-group-toggle">▼</span>
+      </div>
+      <div class="ctrl-group-body">
+        <div class="ctrl-row">
+          <label>Widget Theme</label>
+          <select id="stats-theme" onchange="updateAll()">
+            <option value="dark">Dark</option>
+            <option value="radical">Radical</option>
+            <option value="merko">Merko</option>
+            <option value="gruvbox">Gruvbox</option>
+            <option value="tokyonight">Tokyo Night</option>
+            <option value="onedark">One Dark</option>
+            <option value="cobalt">Cobalt</option>
+            <option value="synthwave">Synthwave</option>
+            <option value="dracula">Dracula</option>
+            <option value="github_dark">GitHub Dark</option>
+            <option value="github_dark_dimmed">GitHub Dark Dimmed</option>
+            <option value="catppuccin_mocha">Catppuccin Mocha</option>
+          </select>
+        </div>
+        <div class="ctrl-row">
+          <label>Stats Layout</label>
+          <div class="segmented" id="stats-layout">
+            <button class="active" onclick="setSegment(this, 'stats-layout', 'stacked')">Stacked</button>
+            <button onclick="setSegment(this, 'stats-layout', 'side-by-side')">Side by Side</button>
+          </div>
+        </div>
+        <div class="ctrl-row ctrl-row-inline">
+          <label>GitHub Stats Card</label>
+          <label class="toggle-switch">
+            <input type="checkbox" id="stats-card-enabled" checked onchange="updateAll()">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <div class="ctrl-row ctrl-row-inline">
+          <label>Show Icons on Stats</label>
+          <label class="toggle-switch">
+            <input type="checkbox" id="stats-show-icons" checked onchange="updateAll()">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <div class="ctrl-row ctrl-row-inline">
+          <label>Count Private Repos</label>
+          <label class="toggle-switch">
+            <input type="checkbox" id="stats-private" onchange="updateAll()">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <div class="ctrl-row ctrl-row-inline">
+          <label>Top Languages Card</label>
+          <label class="toggle-switch">
+            <input type="checkbox" id="langs-enabled" checked onchange="updateAll()">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <div class="ctrl-row">
+          <label>Languages Layout</label>
+          <select id="langs-layout" onchange="updateAll()">
+            <option value="compact">Compact</option>
+            <option value="default">Default</option>
+            <option value="donut">Donut</option>
+            <option value="donut-vertical">Donut Vertical</option>
+            <option value="pie">Pie</option>
+          </select>
+        </div>
+        <div class="ctrl-row ctrl-row-inline">
+          <label>Streak Stats</label>
+          <label class="toggle-switch">
+            <input type="checkbox" id="streak-enabled" onchange="updateAll()">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <div class="ctrl-row ctrl-row-inline">
+          <label>Trophy Display</label>
+          <label class="toggle-switch">
+            <input type="checkbox" id="trophy-enabled" checked onchange="updateAll()">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <div class="ctrl-row">
+          <label>Trophy Theme</label>
+          <select id="trophy-theme" onchange="updateAll()">
+            <option value="">Default</option>
+            <option value="onedark">One Dark</option>
+            <option value="gruvbox">Gruvbox</option>
+            <option value="dracula">Dracula</option>
+            <option value="monokai">Monokai</option>
+            <option value="chalk">Chalk</option>
+            <option value="nord">Nord</option>
+            <option value="alduin">Alduin</option>
+            <option value="darkhub">Dark Hub</option>
+            <option value="radical">Radical</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Social Links -->
+    <div class="ctrl-group" id="group-social">
+      <div class="ctrl-group-header" onclick="toggleGroup('group-social')">
+        <span class="ctrl-group-title">Social Links</span>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <label class="toggle-switch" onclick="event.stopPropagation()">
+            <input type="checkbox" id="social-enabled" checked onchange="updateAll()">
+            <span class="toggle-slider"></span>
+          </label>
+          <span class="ctrl-group-toggle">▼</span>
+        </div>
+      </div>
+      <div class="ctrl-group-body">
+        <div class="ctrl-row">
+          <label>Style</label>
+          <div class="segmented" id="social-style">
+            <button class="active" onclick="setSegment(this, 'social-style', 'badges')">Badges</button>
+            <button onclick="setSegment(this, 'social-style', 'text')">Text Links</button>
+          </div>
+        </div>
+        <div class="ctrl-row">
+          <label>Links</label>
+          <div class="editable-list" id="social-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Extras -->
+    <div class="ctrl-group" id="group-extras">
+      <div class="ctrl-group-header" onclick="toggleGroup('group-extras')">
+        <span class="ctrl-group-title">Extras</span>
+        <span class="ctrl-group-toggle">▼</span>
+      </div>
+      <div class="ctrl-group-body">
+        <div class="ctrl-row ctrl-row-inline">
+          <label>Visitor Counter</label>
+          <label class="toggle-switch">
+            <input type="checkbox" id="visitor-enabled" onchange="updateAll()">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <div class="ctrl-row ctrl-row-inline">
+          <label>Collapsible "More" Section</label>
+          <label class="toggle-switch">
+            <input type="checkbox" id="collapsible-enabled" onchange="updateAll()">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <div class="ctrl-row">
+          <label>Collapsible Content</label>
+          <textarea id="collapsible-content" oninput="updateAll()" rows="3" placeholder="Markdown content inside the collapsible section...">Here are some more things about me...</textarea>
+        </div>
+        <div class="ctrl-row">
+          <label>Section Dividers</label>
+          <div class="segmented" id="divider-style">
+            <button class="active" onclick="setSegment(this, 'divider-style', 'none')">None</button>
+            <button onclick="setSegment(this, 'divider-style', 'hr')">--- Line</button>
+            <button onclick="setSegment(this, 'divider-style', 'wave')">Wave</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Right Panel -->
+  <div class="right-panel">
+    <div class="panel-header">
+      <div class="segmented" id="view-mode">
+        <button class="active" onclick="setViewMode('preview')">Preview</button>
+        <button onclick="setViewMode('markdown')">Markdown</button>
+      </div>
+      <button class="copy-btn" id="copy-btn" onclick="copyMarkdown()">Copy Markdown</button>
+    </div>
+    <div class="panel-content">
+      <div id="preview-view" class="preview-content"></div>
+      <div id="markdown-view" class="markdown-content hidden"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── State ──────────────────────────────────────────────────
+const USERNAME = 'CypherPoet';
+
+const DEFAULTS = {
+  greetingText: '👋 Greetings, fellow human 🧬',
+  subtitleText: '',
+  headerStyle: 'emoji-heading',
+  headerAlign: 'center',
+  aboutEnabled: false,
+  aboutItems: '🔭 I\'m currently working on ...\n🌱 I\'m currently learning ...\n💬 Ask me about ...\n📫 How to reach me: ...\n⚡ Fun fact: ...',
+  aboutLayout: 'bullets',
+  skillsEnabled: false,
+  skillsStyle: 'shields',
+  skillsBadgeStyle: 'for-the-badge',
+  skillsList: 'Swift,Python,JavaScript,TypeScript,React,SwiftUI,Xcode,Git',
+  skillsColor: '',
+  statsTheme: 'dark',
+  statsLayout: 'stacked',
+  statsCardEnabled: true,
+  statsShowIcons: true,
+  statsPrivate: false,
+  langsEnabled: true,
+  langsLayout: 'compact',
+  streakEnabled: false,
+  trophyEnabled: true,
+  trophyTheme: '',
+  socialEnabled: true,
+  socialStyle: 'badges',
+  socialLinks: [
+    { label: 'LinkTree', url: 'https://linktr.ee/CypherPoet', icon: 'linktree', color: '39e09b' }
+  ],
+  visitorEnabled: false,
+  collapsibleEnabled: false,
+  collapsibleContent: 'Here are some more things about me...',
+  dividerStyle: 'none',
+};
+
+let state = JSON.parse(JSON.stringify(DEFAULTS));
+let currentView = 'preview';
+let activePreset = null;
+
+// ── Social Links Data ──────────────────────────────────────
+function renderSocialList() {
+  const container = document.getElementById('social-list');
+  container.innerHTML = '';
+  state.socialLinks.forEach((link, i) => {
+    const row = document.createElement('div');
+    row.className = 'social-link-card';
+    row.innerHTML = `
+      <div class="social-link-row">
+        <input type="text" value="${escapeAttr(link.label)}" placeholder="Label"
+          oninput="state.socialLinks[${i}].label=this.value;updateAll()">
+        <input type="text" value="${escapeAttr(link.url)}" placeholder="URL" style="flex:2"
+          oninput="state.socialLinks[${i}].url=this.value;updateAll()">
+        <button class="list-remove-btn" onclick="removeSocialLink(${i})">×</button>
+      </div>
+      <div class="social-link-row">
+        <input type="text" value="${escapeAttr(link.icon)}" placeholder="Icon (shields.io logo)"
+          oninput="state.socialLinks[${i}].icon=this.value;updateAll()">
+        <input type="text" value="${escapeAttr(link.color)}" placeholder="Color hex" style="flex:0.6"
+          oninput="state.socialLinks[${i}].color=this.value;updateAll()">
+      </div>
+    `;
+    container.appendChild(row);
+  });
+  const addBtn = document.createElement('button');
+  addBtn.className = 'list-add-btn';
+  addBtn.textContent = '+ Add Link';
+  addBtn.onclick = () => {
+    state.socialLinks.push({ label: '', url: '', icon: '', color: '0d1117' });
+    renderSocialList();
+    updateAll();
+  };
+  container.appendChild(addBtn);
+}
+
+function removeSocialLink(i) {
+  state.socialLinks.splice(i, 1);
+  renderSocialList();
+  updateAll();
+}
+
+function escapeAttr(str) {
+  return str.replace(/"/g, '&quot;').replace(/</g, '&lt;');
+}
+
+// ── Read state from controls ───────────────────────────────
+function readState() {
+  state.greetingText = document.getElementById('greeting-text').value;
+  state.subtitleText = document.getElementById('subtitle-text').value;
+  state.headerStyle = getSegmentValue('header-style');
+  state.headerAlign = getSegmentValue('header-align');
+  state.aboutEnabled = document.getElementById('about-enabled').checked;
+  state.aboutItems = document.getElementById('about-items').value;
+  state.aboutLayout = getSegmentValue('about-layout');
+  state.skillsEnabled = document.getElementById('skills-enabled').checked;
+  state.skillsStyle = getSegmentValue('skills-style');
+  state.skillsBadgeStyle = document.getElementById('skills-badge-style').value;
+  state.skillsList = document.getElementById('skills-list').value;
+  state.skillsColor = document.getElementById('skills-color').value;
+  state.statsTheme = document.getElementById('stats-theme').value;
+  state.statsLayout = getSegmentValue('stats-layout');
+  state.statsCardEnabled = document.getElementById('stats-card-enabled').checked;
+  state.statsShowIcons = document.getElementById('stats-show-icons').checked;
+  state.statsPrivate = document.getElementById('stats-private').checked;
+  state.langsEnabled = document.getElementById('langs-enabled').checked;
+  state.langsLayout = document.getElementById('langs-layout').value;
+  state.streakEnabled = document.getElementById('streak-enabled').checked;
+  state.trophyEnabled = document.getElementById('trophy-enabled').checked;
+  state.trophyTheme = document.getElementById('trophy-theme').value;
+  state.socialEnabled = document.getElementById('social-enabled').checked;
+  state.socialStyle = getSegmentValue('social-style');
+  state.visitorEnabled = document.getElementById('visitor-enabled').checked;
+  state.collapsibleEnabled = document.getElementById('collapsible-enabled').checked;
+  state.collapsibleContent = document.getElementById('collapsible-content').value;
+  state.dividerStyle = getSegmentValue('divider-style');
+}
+
+// ── Write state to controls ────────────────────────────────
+function writeState() {
+  document.getElementById('greeting-text').value = state.greetingText;
+  document.getElementById('subtitle-text').value = state.subtitleText;
+  setSegmentValue('header-style', state.headerStyle);
+  setSegmentValue('header-align', state.headerAlign);
+  document.getElementById('about-enabled').checked = state.aboutEnabled;
+  document.getElementById('about-items').value = state.aboutItems;
+  setSegmentValue('about-layout', state.aboutLayout);
+  document.getElementById('skills-enabled').checked = state.skillsEnabled;
+  setSegmentValue('skills-style', state.skillsStyle);
+  document.getElementById('skills-badge-style').value = state.skillsBadgeStyle;
+  document.getElementById('skills-list').value = state.skillsList;
+  document.getElementById('skills-color').value = state.skillsColor;
+  document.getElementById('stats-theme').value = state.statsTheme;
+  setSegmentValue('stats-layout', state.statsLayout);
+  document.getElementById('stats-card-enabled').checked = state.statsCardEnabled;
+  document.getElementById('stats-show-icons').checked = state.statsShowIcons;
+  document.getElementById('stats-private').checked = state.statsPrivate;
+  document.getElementById('langs-enabled').checked = state.langsEnabled;
+  document.getElementById('langs-layout').value = state.langsLayout;
+  document.getElementById('streak-enabled').checked = state.streakEnabled;
+  document.getElementById('trophy-enabled').checked = state.trophyEnabled;
+  document.getElementById('trophy-theme').value = state.trophyTheme;
+  document.getElementById('social-enabled').checked = state.socialEnabled;
+  setSegmentValue('social-style', state.socialStyle);
+  document.getElementById('visitor-enabled').checked = state.visitorEnabled;
+  document.getElementById('collapsible-enabled').checked = state.collapsibleEnabled;
+  document.getElementById('collapsible-content').value = state.collapsibleContent;
+  setSegmentValue('divider-style', state.dividerStyle);
+  renderSocialList();
+}
+
+// ── Segmented controls ─────────────────────────────────────
+function setSegment(btn, groupId, value) {
+  const group = document.getElementById(groupId);
+  group.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  updateAll();
+}
+
+function getSegmentValue(groupId) {
+  const active = document.getElementById(groupId).querySelector('button.active');
+  if (!active) return '';
+  const text = active.textContent.trim().toLowerCase();
+  // Map display text to values
+  const maps = {
+    'header-style': { 'emoji heading': 'emoji-heading', 'typing svg': 'typing-svg', 'plain': 'plain' },
+    'header-align': { 'left': 'left', 'center': 'center' },
+    'about-layout': { 'bullets': 'bullets', 'two columns': 'table' },
+    'skills-style': { 'shields.io': 'shields', 'skill icons': 'skill-icons', 'text': 'text' },
+    'stats-layout': { 'stacked': 'stacked', 'side by side': 'side-by-side' },
+    'social-style': { 'badges': 'badges', 'text links': 'text' },
+    'divider-style': { 'none': 'none', '--- line': 'hr', 'wave': 'wave' },
+  };
+  return maps[groupId]?.[text] || text;
+}
+
+function setSegmentValue(groupId, value) {
+  const maps = {
+    'header-style': { 'emoji-heading': 'Emoji Heading', 'typing-svg': 'Typing SVG', 'plain': 'Plain' },
+    'header-align': { 'left': 'Left', 'center': 'Center' },
+    'about-layout': { 'bullets': 'Bullets', 'table': 'Two Columns' },
+    'skills-style': { 'shields': 'Shields.io', 'skill-icons': 'Skill Icons', 'text': 'Text' },
+    'stats-layout': { 'stacked': 'Stacked', 'side-by-side': 'Side by Side' },
+    'social-style': { 'badges': 'Badges', 'text': 'Text Links' },
+    'divider-style': { 'none': 'None', 'hr': '--- Line', 'wave': 'Wave' },
+  };
+  const displayText = maps[groupId]?.[value];
+  if (!displayText) return;
+  const group = document.getElementById(groupId);
+  group.querySelectorAll('button').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent.trim() === displayText);
+  });
+}
+
+// ── Toggle groups ──────────────────────────────────────────
+function toggleGroup(id) {
+  document.getElementById(id).classList.toggle('collapsed');
+}
+
+// ── View mode ──────────────────────────────────────────────
+function setViewMode(mode) {
+  currentView = mode;
+  document.getElementById('view-mode').querySelectorAll('button').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent.trim().toLowerCase() === mode);
+  });
+  document.getElementById('preview-view').classList.toggle('hidden', mode !== 'preview');
+  document.getElementById('markdown-view').classList.toggle('hidden', mode !== 'markdown');
+}
+
+// ── Markdown generation ────────────────────────────────────
+function generateMarkdown() {
+  const lines = [];
+  const centered = state.headerAlign === 'center';
+  const divider = getDivider();
+
+  // Header
+  if (centered) lines.push('<div align="center">', '');
+  if (state.headerStyle === 'emoji-heading') {
+    lines.push(`## ${state.greetingText}`, '');
+  } else if (state.headerStyle === 'typing-svg') {
+    const text = encodeURIComponent(state.greetingText);
+    lines.push(`[![Typing SVG](https://readme-typing-svg.demolab.com?font=Fira+Code&size=28&duration=3000&pause=1000&color=58A6FF&center=true&vCenter=true&width=600&lines=${text})](https://git.io/typing-svg)`, '');
+  } else {
+    lines.push(`## ${state.greetingText}`, '');
+  }
+  if (state.subtitleText) {
+    lines.push(`*${state.subtitleText}*`, '');
+  }
+  if (centered) lines.push('</div>', '');
+
+  // Social links (near top)
+  if (state.socialEnabled && state.socialLinks.length > 0) {
+    const validLinks = state.socialLinks.filter(l => l.label && l.url);
+    if (validLinks.length > 0) {
+      if (centered) lines.push('<div align="center">', '');
+      if (state.socialStyle === 'badges') {
+        const badges = validLinks.map(l => {
+          const logo = l.icon ? `&logo=${encodeURIComponent(l.icon)}&logoColor=white` : '';
+          const color = l.color || '0d1117';
+          return `[![${l.label}](https://img.shields.io/badge/${encodeURIComponent(l.label)}-${color}?style=for-the-badge${logo})](${l.url})`;
+        });
+        lines.push(badges.join(' '), '');
+      } else {
+        const textLinks = validLinks.map(l => `[${l.label}](${l.url})`);
+        lines.push('👉 ' + textLinks.join(' · '), '');
+      }
+      if (centered) lines.push('</div>', '');
+      if (divider) lines.push(divider, '');
+    }
+  }
+
+  // About Me
+  if (state.aboutEnabled) {
+    lines.push('### About Me', '');
+    const items = state.aboutItems.split('\n').filter(l => l.trim());
+    if (state.aboutLayout === 'bullets') {
+      items.forEach(item => lines.push(`- ${item}`));
+      lines.push('');
+    } else {
+      // Two-column table
+      const mid = Math.ceil(items.length / 2);
+      const col1 = items.slice(0, mid);
+      const col2 = items.slice(mid);
+      lines.push('| | |', '|---|---|');
+      for (let i = 0; i < Math.max(col1.length, col2.length); i++) {
+        lines.push(`| ${col1[i] || ''} | ${col2[i] || ''} |`);
+      }
+      lines.push('');
+    }
+    if (divider) lines.push(divider, '');
+  }
+
+  // Skills
+  if (state.skillsEnabled) {
+    const skills = state.skillsList.split(',').map(s => s.trim()).filter(Boolean);
+    if (skills.length > 0) {
+      lines.push('### Tech Stack', '');
+      if (centered) lines.push('<div align="center">', '');
+      if (state.skillsStyle === 'shields') {
+        const badges = skills.map(s => {
+          const color = state.skillsColor || getSkillColor(s);
+          return `![${s}](https://img.shields.io/badge/${encodeURIComponent(s)}-${color}?style=${state.skillsBadgeStyle}&logo=${encodeURIComponent(s.toLowerCase())}&logoColor=white)`;
+        });
+        lines.push(badges.join(' '), '');
+      } else if (state.skillsStyle === 'skill-icons') {
+        const iconNames = skills.map(s => s.toLowerCase()).join(',');
+        lines.push(`[![My Skills](https://skillicons.dev/icons?i=${iconNames}&theme=dark)](https://skillicons.dev)`, '');
+      } else {
+        lines.push('`' + skills.join('` `') + '`', '');
+      }
+      if (centered) lines.push('</div>', '');
+      if (divider) lines.push(divider, '');
+    }
+  }
+
+  // Stats
+  const statsWidgets = [];
+  if (state.statsCardEnabled) {
+    let url = `https://github-readme-stats.vercel.app/api?username=${USERNAME}&count_private=${state.statsPrivate}&show_icons=${state.statsShowIcons}&theme=${state.statsTheme}`;
+    statsWidgets.push({ md: `![GitHub Stats](${url})`, type: 'stats' });
+  }
+  if (state.langsEnabled) {
+    let url = `https://github-readme-stats.vercel.app/api/top-langs/?username=${USERNAME}&layout=${state.langsLayout}&theme=${state.statsTheme}`;
+    statsWidgets.push({ md: `![Top Langs](${url})`, type: 'langs' });
+  }
+  if (state.streakEnabled) {
+    let url = `https://github-readme-streak-stats.herokuapp.com/?user=${USERNAME}&theme=${state.statsTheme}`;
+    statsWidgets.push({ md: `![GitHub Streak](${url})`, type: 'streak' });
+  }
+
+  if (statsWidgets.length > 0) {
+    if (centered) lines.push('<div align="center">', '');
+    if (state.statsLayout === 'side-by-side' && statsWidgets.length >= 2) {
+      // Table layout for side by side
+      const headers = statsWidgets.map(() => '').join(' | ');
+      const dividers = statsWidgets.map(() => '---').join(' | ');
+      const cells = statsWidgets.map(w => w.md).join(' | ');
+      lines.push(`| ${headers} |`, `| ${dividers} |`, `| ${cells} |`, '');
+    } else {
+      statsWidgets.forEach(w => lines.push(w.md, ''));
+    }
+    if (centered) lines.push('</div>', '');
+  }
+
+  // Trophy
+  if (state.trophyEnabled) {
+    let url = `https://github-profile-trophy.vercel.app/?username=${USERNAME}`;
+    if (state.trophyTheme) url += `&theme=${state.trophyTheme}`;
+    if (centered) lines.push('<div align="center">', '');
+    lines.push(`[![trophy](${url})](https://github.com/ryo-ma/github-profile-trophy)`, '');
+    if (centered) lines.push('</div>', '');
+  }
+
+  // Visitor counter
+  if (state.visitorEnabled) {
+    if (centered) lines.push('<div align="center">', '');
+    lines.push(`![Visitor Count](https://komarev.com/ghpvc/?username=${USERNAME}&color=58a6ff&style=flat-square)`, '');
+    if (centered) lines.push('</div>', '');
+  }
+
+  // Collapsible
+  if (state.collapsibleEnabled && state.collapsibleContent.trim()) {
+    lines.push('<details>', '<summary>More About Me</summary>', '', state.collapsibleContent, '', '</details>', '');
+  }
+
+  return lines.join('\n');
+}
+
+function getDivider() {
+  if (state.dividerStyle === 'hr') return '---';
+  if (state.dividerStyle === 'wave') return '<img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png" width="100%">';
+  return '';
+}
+
+function getSkillColor(skill) {
+  const colors = {
+    swift: 'F05138', python: '3776AB', javascript: 'F7DF1E', typescript: '3178C6',
+    react: '61DAFB', swiftui: '0071E3', xcode: '147EFB', git: 'F05032',
+    nodejs: '339933', 'node.js': '339933', html: 'E34F26', css: '1572B6',
+    rust: '000000', go: '00ADD8', java: 'ED8B00', kotlin: '7F52FF',
+    ruby: 'CC342D', php: '777BB4', docker: '2496ED', kubernetes: '326CE5',
+    aws: '232F3E', firebase: 'FFCA28', mongodb: '47A248', postgresql: '4169E1',
+    redis: 'DC382D', graphql: 'E10098', vue: '4FC08D', angular: 'DD0031',
+    nextjs: '000000', 'next.js': '000000', tailwind: '06B6D4', sass: 'CC6699',
+    figma: 'F24E1E', linux: 'FCC624', ubuntu: 'E95420', vscode: '007ACC',
+  };
+  return colors[skill.toLowerCase()] || '0d1117';
+}
+
+// ── Preview rendering ──────────────────────────────────────
+function renderPreview(markdown) {
+  let html = markdown;
+
+  // HTML tags pass through (align divs, details, summary, img tags)
+  // Process markdown elements
+
+  // Escape HTML except our allowed tags
+  html = html.replace(/&/g, '&amp;');
+
+  // Restore allowed HTML tags
+  const allowedTagPattern = /&lt;(\/?(div|details|summary|img|br|hr|table|tr|td|th|thead|tbody)\b[^&]*?)&gt;/gi;
+  html = html.replace(allowedTagPattern, '<$1>');
+
+  // Fix img tags that got partially escaped
+  html = html.replace(/&lt;img\s/gi, '<img ');
+  html = html.replace(/width=&quot;([^&]*)&quot;/gi, 'width="$1"');
+  html = html.replace(/src=&quot;([^&]*)&quot;/gi, 'src="$1"');
+
+  // Headers
+  html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+  html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+  html = html.replace(/^# (.+)$/gm, '<h1>$1</h1>');
+
+  // Bold / italic
+  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+
+  // Horizontal rules
+  html = html.replace(/^---$/gm, '<hr>');
+
+  // Images: [![alt](img)](link) — linked images
+  html = html.replace(/\[!\[([^\]]*)\]\(([^)]+)\)\]\(([^)]+)\)/g, '<a href="$3"><img src="$2" alt="$1"></a>');
+  // Images: ![alt](url)
+  html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1">');
+  // Links: [text](url)
+  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
+
+  // Inline code
+  html = html.replace(/`([^`]+)`/g, '<code style="background:var(--bg-raised);padding:2px 6px;border-radius:3px;font-size:85%">$1</code>');
+
+  // List items
+  html = html.replace(/^- (.+)$/gm, '<li>$1</li>');
+  // Wrap consecutive li in ul
+  html = html.replace(/((?:<li>.*<\/li>\n?)+)/g, '<ul>$1</ul>');
+
+  // Tables (simple)
+  html = html.replace(/^\|(.+)\|\s*\n\|[\s\-:|]+\|\s*\n((?:\|.+\|\s*\n?)*)/gm, (match, headerRow, bodyRows) => {
+    const headers = headerRow.split('|').map(h => h.trim()).filter(Boolean);
+    const rows = bodyRows.trim().split('\n').map(r =>
+      r.split('|').map(c => c.trim()).filter(Boolean)
+    );
+    let table = '<table><thead><tr>';
+    headers.forEach(h => table += `<th>${h}</th>`);
+    table += '</tr></thead><tbody>';
+    rows.forEach(r => {
+      table += '<tr>';
+      r.forEach(c => table += `<td>${c}</td>`);
+      table += '</tr>';
+    });
+    table += '</tbody></table>';
+    return table;
+  });
+
+  // Simple table without headers (used for side-by-side)
+  html = html.replace(/^\| \|\s*\n\|[\s\-]+\|\s*\n\|(.+)\|\s*$/gm, (match, cells) => {
+    const parts = cells.split('|').map(c => c.trim());
+    let table = '<table><tr>';
+    parts.forEach(c => table += `<td style="border:none;padding:8px">${c}</td>`);
+    table += '</tr></table>';
+    return table;
+  });
+
+  // Paragraphs — wrap bare lines
+  html = html.split('\n').map(line => {
+    const trimmed = line.trim();
+    if (!trimmed) return '';
+    if (trimmed.startsWith('<')) return line;
+    if (trimmed.startsWith('#')) return line;
+    return `<p>${line}</p>`;
+  }).join('\n');
+
+  // Clean empty paragraphs
+  html = html.replace(/<p>\s*<\/p>/g, '');
+
+  return html;
+}
+
+// ── Markdown syntax highlighting ───────────────────────────
+function highlightMarkdown(md) {
+  let html = escapeHtml(md);
+
+  // Headers
+  html = html.replace(/^(#{1,3} .+)$/gm, '<span class="md-heading">$1</span>');
+  // Image links [![...](...)][(...)]
+  html = html.replace(/(\[!\[[^\]]*\]\([^)]+\)\]\([^)]+\))/g, '<span class="md-image">$1</span>');
+  // Images ![...](...)
+  html = html.replace(/(!\[[^\]]*\]\([^)]+\))/g, '<span class="md-image">$1</span>');
+  // Links [...](...)
+  html = html.replace(/(\[[^\]!][^\]]*\]\([^)]+\))/g, '<span class="md-link">$1</span>');
+  // HTML tags
+  html = html.replace(/(&lt;[^&]*&gt;)/g, '<span class="md-html">$1</span>');
+  // Bold
+  html = html.replace(/(\*\*[^*]+\*\*)/g, '<span class="md-bold">$1</span>');
+  // Bullets
+  html = html.replace(/^(- )/gm, '<span class="md-bullet">- </span>');
+  // HR
+  html = html.replace(/^(---)$/gm, '<span class="md-hr">---</span>');
+
+  return html;
+}
+
+function escapeHtml(str) {
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+// ── Update everything ──────────────────────────────────────
+function updateAll() {
+  readState();
+  const md = generateMarkdown();
+
+  document.getElementById('preview-view').innerHTML = renderPreview(md);
+  document.getElementById('markdown-view').innerHTML = highlightMarkdown(md);
+
+  // Clear active preset
+  document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+  if (activePreset) {
+    document.querySelector(`.preset-btn[onclick*="${activePreset}"]`)?.classList.add('active');
+  }
+}
+
+// ── Presets ─────────────────────────────────────────────────
+const PRESETS = {
+  'minimal': {
+    greetingText: '👋 Greetings, fellow human 🧬',
+    subtitleText: '',
+    headerStyle: 'emoji-heading',
+    headerAlign: 'center',
+    aboutEnabled: false,
+    aboutItems: DEFAULTS.aboutItems,
+    aboutLayout: 'bullets',
+    skillsEnabled: false,
+    skillsStyle: 'shields',
+    skillsBadgeStyle: 'for-the-badge',
+    skillsList: DEFAULTS.skillsList,
+    skillsColor: '',
+    statsTheme: 'dark',
+    statsLayout: 'stacked',
+    statsCardEnabled: true,
+    statsShowIcons: true,
+    statsPrivate: false,
+    langsEnabled: true,
+    langsLayout: 'compact',
+    streakEnabled: false,
+    trophyEnabled: true,
+    trophyTheme: '',
+    socialEnabled: true,
+    socialStyle: 'text',
+    socialLinks: [
+      { label: 'LinkTree', url: 'https://linktr.ee/CypherPoet', icon: 'linktree', color: '39e09b' }
+    ],
+    visitorEnabled: false,
+    collapsibleEnabled: false,
+    collapsibleContent: '',
+    dividerStyle: 'none',
+  },
+  'developer-card': {
+    greetingText: "Hey, I'm CypherPoet 👋",
+    subtitleText: 'iOS Developer · Open Source Enthusiast · Building cool things with Swift',
+    headerStyle: 'typing-svg',
+    headerAlign: 'center',
+    aboutEnabled: true,
+    aboutItems: '🔭 Currently building iOS apps with SwiftUI\n🌱 Exploring the latest Apple frameworks\n💬 Ask me about Swift, iOS, and open source\n📫 Reach me via LinkTree below',
+    aboutLayout: 'bullets',
+    skillsEnabled: true,
+    skillsStyle: 'shields',
+    skillsBadgeStyle: 'for-the-badge',
+    skillsList: 'Swift,SwiftUI,Xcode,Python,JavaScript,TypeScript,React,Git',
+    skillsColor: '',
+    statsTheme: 'tokyonight',
+    statsLayout: 'side-by-side',
+    statsCardEnabled: true,
+    statsShowIcons: true,
+    statsPrivate: false,
+    langsEnabled: true,
+    langsLayout: 'compact',
+    streakEnabled: false,
+    trophyEnabled: false,
+    trophyTheme: '',
+    socialEnabled: true,
+    socialStyle: 'badges',
+    socialLinks: [
+      { label: 'LinkTree', url: 'https://linktr.ee/CypherPoet', icon: 'linktree', color: '39e09b' }
+    ],
+    visitorEnabled: true,
+    collapsibleEnabled: false,
+    collapsibleContent: '',
+    dividerStyle: 'hr',
+  },
+  'badge-wall': {
+    greetingText: '👋 Greetings, fellow human 🧬',
+    subtitleText: '',
+    headerStyle: 'emoji-heading',
+    headerAlign: 'center',
+    aboutEnabled: false,
+    aboutItems: DEFAULTS.aboutItems,
+    aboutLayout: 'bullets',
+    skillsEnabled: true,
+    skillsStyle: 'skill-icons',
+    skillsBadgeStyle: 'for-the-badge',
+    skillsList: 'Swift,Python,JavaScript,TypeScript,React,SwiftUI,Git,Docker,Firebase,MongoDB,GraphQL,Figma',
+    skillsColor: '',
+    statsTheme: 'radical',
+    statsLayout: 'stacked',
+    statsCardEnabled: true,
+    statsShowIcons: true,
+    statsPrivate: false,
+    langsEnabled: true,
+    langsLayout: 'donut',
+    streakEnabled: true,
+    trophyEnabled: false,
+    trophyTheme: '',
+    socialEnabled: true,
+    socialStyle: 'badges',
+    socialLinks: [
+      { label: 'LinkTree', url: 'https://linktr.ee/CypherPoet', icon: 'linktree', color: '39e09b' },
+      { label: 'Twitter', url: 'https://twitter.com/CypherPoet', icon: 'twitter', color: '1DA1F2' },
+    ],
+    visitorEnabled: true,
+    collapsibleEnabled: false,
+    collapsibleContent: '',
+    dividerStyle: 'wave',
+  },
+  'dashboard': {
+    greetingText: "CypherPoet's Dashboard",
+    subtitleText: 'Full-stack developer metrics and activity',
+    headerStyle: 'plain',
+    headerAlign: 'left',
+    aboutEnabled: true,
+    aboutItems: '🔭 Currently working on iOS and web projects\n🌱 Learning Rust and systems programming\n💬 Ask me about Swift, React, and architecture\n📫 LinkTree: https://linktr.ee/CypherPoet\n⚡ Fun fact: I love cryptography puzzles',
+    aboutLayout: 'table',
+    skillsEnabled: true,
+    skillsStyle: 'shields',
+    skillsBadgeStyle: 'flat-square',
+    skillsList: 'Swift,SwiftUI,Python,JavaScript,TypeScript,React,Node.js,Docker,Git,PostgreSQL,Firebase,AWS',
+    skillsColor: '0d1117',
+    statsTheme: 'github_dark',
+    statsLayout: 'side-by-side',
+    statsCardEnabled: true,
+    statsShowIcons: true,
+    statsPrivate: true,
+    langsEnabled: true,
+    langsLayout: 'compact',
+    streakEnabled: true,
+    trophyEnabled: true,
+    trophyTheme: 'darkhub',
+    socialEnabled: true,
+    socialStyle: 'badges',
+    socialLinks: [
+      { label: 'LinkTree', url: 'https://linktr.ee/CypherPoet', icon: 'linktree', color: '39e09b' },
+    ],
+    visitorEnabled: true,
+    collapsibleEnabled: false,
+    collapsibleContent: '',
+    dividerStyle: 'hr',
+  },
+  'storyteller': {
+    greetingText: '👋 Greetings, fellow human 🧬',
+    subtitleText: "I'm a developer who loves building things that matter.",
+    headerStyle: 'emoji-heading',
+    headerAlign: 'left',
+    aboutEnabled: true,
+    aboutItems: "🔭 I build iOS apps and open-source Swift packages\n🌱 I'm always learning — currently diving deeper into SwiftUI and Combine\n💬 I love discussing software architecture, clean code, and developer tooling\n📫 Find all my links at LinkTree\n⚡ When I'm not coding, you'll find me exploring cryptography and puzzles",
+    aboutLayout: 'bullets',
+    skillsEnabled: false,
+    skillsStyle: 'shields',
+    skillsBadgeStyle: 'for-the-badge',
+    skillsList: DEFAULTS.skillsList,
+    skillsColor: '',
+    statsTheme: 'catppuccin_mocha',
+    statsLayout: 'stacked',
+    statsCardEnabled: true,
+    statsShowIcons: true,
+    statsPrivate: false,
+    langsEnabled: false,
+    langsLayout: 'compact',
+    streakEnabled: false,
+    trophyEnabled: false,
+    trophyTheme: '',
+    socialEnabled: true,
+    socialStyle: 'text',
+    socialLinks: [
+      { label: 'LinkTree', url: 'https://linktr.ee/CypherPoet', icon: 'linktree', color: '39e09b' },
+    ],
+    visitorEnabled: false,
+    collapsibleEnabled: true,
+    collapsibleContent: "### My Journey\n\nI started coding because I was fascinated by how software could turn ideas into reality. Over the years, I've built everything from iOS apps to web platforms, always with a focus on clean architecture and great user experiences.\n\n### What I Value\n\n- **Clarity** over cleverness\n- **Open source** as a way to give back\n- **Continuous learning** — there's always more to discover",
+    dividerStyle: 'none',
+  },
+};
+
+function applyPreset(name) {
+  const preset = PRESETS[name];
+  if (!preset) return;
+  state = JSON.parse(JSON.stringify(preset));
+  activePreset = name;
+  writeState();
+  updateAll();
+}
+
+// ── Copy ───────────────────────────────────────────────────
+function copyMarkdown() {
+  const md = generateMarkdown();
+  navigator.clipboard.writeText(md).then(() => {
+    const btn = document.getElementById('copy-btn');
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = 'Copy Markdown';
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+}
+
+// ── Init ───────────────────────────────────────────────────
+writeState();
+applyPreset('minimal');
+</script>
+
+</body>
+</html>
