@@ -930,7 +930,7 @@ function generateMarkdown() {
       if (centered) lines.push('<div align="center">', '');
       if (state.socialStyle === 'badges') {
         const badges = validLinks.map(l => {
-          const logo = l.icon ? `&logo=${encodeURIComponent(l.icon)}&logoColor=white` : '';
+          const logo = l.icon ? `&logo=${encodeURIComponent(l.icon)}&logoColor=black` : '';
           const color = l.color || '0d1117';
           return `[![${l.label}](https://img.shields.io/badge/${encodeURIComponent(l.label)}-${color}?style=for-the-badge${logo})](${l.url})`;
         });

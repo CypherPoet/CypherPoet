@@ -6,7 +6,7 @@
 
 <br/>
 
-👉 [![LinkTree](https://img.shields.io/badge/LinkTree-43E55E?style=for-the-badge&logo=linktree&logoColor=white)](https://linktr.ee/CypherPoet)
+👉 [![LinkTree](https://img.shields.io/badge/LinkTree-43E55E?style=for-the-badge&logo=linktree&logoColor=black)](https://linktr.ee/CypherPoet)
 
 <br/>
 
