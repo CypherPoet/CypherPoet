@@ -431,16 +431,16 @@
         <div class="ctrl-row">
           <label>Style</label>
           <div class="segmented" id="header-style">
-            <button class="active" onclick="setSegment(this, 'header-style', 'emoji-heading')">Emoji Heading</button>
-            <button onclick="setSegment(this, 'header-style', 'typing-svg')">Typing SVG</button>
-            <button onclick="setSegment(this, 'header-style', 'plain')">Plain</button>
+            <button class="active" data-value="emoji-heading" onclick="setSegment(this, 'header-style')">Emoji Heading</button>
+            <button data-value="typing-svg" onclick="setSegment(this, 'header-style')">Typing SVG</button>
+            <button data-value="plain" onclick="setSegment(this, 'header-style')">Plain</button>
           </div>
         </div>
         <div class="ctrl-row">
           <label>Alignment</label>
           <div class="segmented" id="header-align">
-            <button onclick="setSegment(this, 'header-align', 'left')">Left</button>
-            <button class="active" onclick="setSegment(this, 'header-align', 'center')">Center</button>
+            <button data-value="left" onclick="setSegment(this, 'header-align')">Left</button>
+            <button class="active" data-value="center" onclick="setSegment(this, 'header-align')">Center</button>
           </div>
         </div>
       </div>
@@ -470,8 +470,8 @@
         <div class="ctrl-row">
           <label>Layout</label>
           <div class="segmented" id="about-layout">
-            <button class="active" onclick="setSegment(this, 'about-layout', 'bullets')">Bullets</button>
-            <button onclick="setSegment(this, 'about-layout', 'table')">Two Columns</button>
+            <button class="active" data-value="bullets" onclick="setSegment(this, 'about-layout')">Bullets</button>
+            <button data-value="table" onclick="setSegment(this, 'about-layout')">Two Columns</button>
           </div>
         </div>
       </div>
@@ -493,9 +493,9 @@
         <div class="ctrl-row">
           <label>Style</label>
           <div class="segmented" id="skills-style">
-            <button class="active" onclick="setSegment(this, 'skills-style', 'shields')">Shields.io</button>
-            <button onclick="setSegment(this, 'skills-style', 'skill-icons')">Skill Icons</button>
-            <button onclick="setSegment(this, 'skills-style', 'text')">Text</button>
+            <button class="active" data-value="shields" onclick="setSegment(this, 'skills-style')">Shields.io</button>
+            <button data-value="skill-icons" onclick="setSegment(this, 'skills-style')">Skill Icons</button>
+            <button data-value="text" onclick="setSegment(this, 'skills-style')">Text</button>
           </div>
         </div>
         <div class="ctrl-row">
@@ -552,8 +552,8 @@
         <div class="ctrl-row">
           <label>Stats Layout</label>
           <div class="segmented" id="stats-layout">
-            <button class="active" onclick="setSegment(this, 'stats-layout', 'stacked')">Stacked</button>
-            <button onclick="setSegment(this, 'stats-layout', 'side-by-side')">Side by Side</button>
+            <button class="active" data-value="stacked" onclick="setSegment(this, 'stats-layout')">Stacked</button>
+            <button data-value="side-by-side" onclick="setSegment(this, 'stats-layout')">Side by Side</button>
           </div>
         </div>
         <div class="ctrl-row ctrl-row-inline">
@@ -642,8 +642,8 @@
         <div class="ctrl-row">
           <label>Style</label>
           <div class="segmented" id="social-style">
-            <button class="active" onclick="setSegment(this, 'social-style', 'badges')">Badges</button>
-            <button onclick="setSegment(this, 'social-style', 'text')">Text Links</button>
+            <button class="active" data-value="badges" onclick="setSegment(this, 'social-style')">Badges</button>
+            <button data-value="text" onclick="setSegment(this, 'social-style')">Text Links</button>
           </div>
         </div>
         <div class="ctrl-row">
@@ -681,9 +681,9 @@
         <div class="ctrl-row">
           <label>Section Dividers</label>
           <div class="segmented" id="divider-style">
-            <button class="active" onclick="setSegment(this, 'divider-style', 'none')">None</button>
-            <button onclick="setSegment(this, 'divider-style', 'hr')">--- Line</button>
-            <button onclick="setSegment(this, 'divider-style', 'wave')">Wave</button>
+            <button class="active" data-value="none" onclick="setSegment(this, 'divider-style')">None</button>
+            <button data-value="hr" onclick="setSegment(this, 'divider-style')">--- Line</button>
+            <button data-value="wave" onclick="setSegment(this, 'divider-style')">Wave</button>
           </div>
         </div>
       </div>
@@ -792,7 +792,7 @@ function removeSocialLink(i) {
 }
 
 function escapeAttr(str) {
-  return str.replace(/"/g, '&quot;').replace(/</g, '&lt;');
+  return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
 }
 
 // ── Read state from controls ───────────────────────────────
@@ -870,36 +870,13 @@ function setSegment(btn, groupId, value) {
 
 function getSegmentValue(groupId) {
   const active = document.getElementById(groupId).querySelector('button.active');
-  if (!active) return '';
-  const text = active.textContent.trim().toLowerCase();
-  // Map display text to values
-  const maps = {
-    'header-style': { 'emoji heading': 'emoji-heading', 'typing svg': 'typing-svg', 'plain': 'plain' },
-    'header-align': { 'left': 'left', 'center': 'center' },
-    'about-layout': { 'bullets': 'bullets', 'two columns': 'table' },
-    'skills-style': { 'shields.io': 'shields', 'skill icons': 'skill-icons', 'text': 'text' },
-    'stats-layout': { 'stacked': 'stacked', 'side by side': 'side-by-side' },
-    'social-style': { 'badges': 'badges', 'text links': 'text' },
-    'divider-style': { 'none': 'none', '--- line': 'hr', 'wave': 'wave' },
-  };
-  return maps[groupId]?.[text] || text;
+  return active?.dataset.value || '';
 }
 
 function setSegmentValue(groupId, value) {
-  const maps = {
-    'header-style': { 'emoji-heading': 'Emoji Heading', 'typing-svg': 'Typing SVG', 'plain': 'Plain' },
-    'header-align': { 'left': 'Left', 'center': 'Center' },
-    'about-layout': { 'bullets': 'Bullets', 'table': 'Two Columns' },
-    'skills-style': { 'shields': 'Shields.io', 'skill-icons': 'Skill Icons', 'text': 'Text' },
-    'stats-layout': { 'stacked': 'Stacked', 'side-by-side': 'Side by Side' },
-    'social-style': { 'badges': 'Badges', 'text': 'Text Links' },
-    'divider-style': { 'none': 'None', 'hr': '--- Line', 'wave': 'Wave' },
-  };
-  const displayText = maps[groupId]?.[value];
-  if (!displayText) return;
   const group = document.getElementById(groupId);
   group.querySelectorAll('button').forEach(btn => {
-    btn.classList.toggle('active', btn.textContent.trim() === displayText);
+    btn.classList.toggle('active', btn.dataset.value === value);
   });
 }
 
@@ -916,6 +893,13 @@ function setViewMode(mode) {
   });
   document.getElementById('preview-view').classList.toggle('hidden', mode !== 'preview');
   document.getElementById('markdown-view').classList.toggle('hidden', mode !== 'markdown');
+  if (lastMarkdown) {
+    if (mode === 'preview') {
+      document.getElementById('preview-view').innerHTML = renderPreview(lastMarkdown);
+    } else {
+      document.getElementById('markdown-view').innerHTML = highlightMarkdown(lastMarkdown);
+    }
+  }
 }
 
 // ── Markdown generation ────────────────────────────────────
@@ -1195,14 +1179,18 @@ function escapeHtml(str) {
 }
 
 // ── Update everything ──────────────────────────────────────
+let lastMarkdown = '';
+
 function updateAll() {
   readState();
-  const md = generateMarkdown();
+  lastMarkdown = generateMarkdown();
 
-  document.getElementById('preview-view').innerHTML = renderPreview(md);
-  document.getElementById('markdown-view').innerHTML = highlightMarkdown(md);
+  if (currentView === 'preview') {
+    document.getElementById('preview-view').innerHTML = renderPreview(lastMarkdown);
+  } else {
+    document.getElementById('markdown-view').innerHTML = highlightMarkdown(lastMarkdown);
+  }
 
-  // Clear active preset
   document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
   if (activePreset) {
     document.querySelector(`.preset-btn[onclick*="${activePreset}"]`)?.classList.add('active');
@@ -1210,108 +1198,50 @@ function updateAll() {
 }
 
 // ── Presets ─────────────────────────────────────────────────
+const LINKTREE_LINK = { label: 'LinkTree', url: 'https://linktr.ee/CypherPoet', icon: 'linktree', color: '39e09b' };
+
 const PRESETS = {
   'minimal': {
-    greetingText: '👋 Greetings, fellow human 🧬',
-    subtitleText: '',
-    headerStyle: 'emoji-heading',
-    headerAlign: 'center',
-    aboutEnabled: false,
-    aboutItems: DEFAULTS.aboutItems,
-    aboutLayout: 'bullets',
-    skillsEnabled: false,
-    skillsStyle: 'shields',
-    skillsBadgeStyle: 'for-the-badge',
-    skillsList: DEFAULTS.skillsList,
-    skillsColor: '',
-    statsTheme: 'dark',
-    statsLayout: 'stacked',
-    statsCardEnabled: true,
-    statsShowIcons: true,
-    statsPrivate: false,
-    langsEnabled: true,
-    langsLayout: 'compact',
-    streakEnabled: false,
-    trophyEnabled: true,
-    trophyTheme: '',
-    socialEnabled: true,
+    ...DEFAULTS,
     socialStyle: 'text',
-    socialLinks: [
-      { label: 'LinkTree', url: 'https://linktr.ee/CypherPoet', icon: 'linktree', color: '39e09b' }
-    ],
-    visitorEnabled: false,
-    collapsibleEnabled: false,
-    collapsibleContent: '',
-    dividerStyle: 'none',
+    socialLinks: [LINKTREE_LINK],
   },
   'developer-card': {
+    ...DEFAULTS,
     greetingText: "Hey, I'm CypherPoet 👋",
     subtitleText: 'iOS Developer · Open Source Enthusiast · Building cool things with Swift',
     headerStyle: 'typing-svg',
-    headerAlign: 'center',
     aboutEnabled: true,
     aboutItems: '🔭 Currently building iOS apps with SwiftUI\n🌱 Exploring the latest Apple frameworks\n💬 Ask me about Swift, iOS, and open source\n📫 Reach me via LinkTree below',
-    aboutLayout: 'bullets',
     skillsEnabled: true,
-    skillsStyle: 'shields',
-    skillsBadgeStyle: 'for-the-badge',
     skillsList: 'Swift,SwiftUI,Xcode,Python,JavaScript,TypeScript,React,Git',
-    skillsColor: '',
     statsTheme: 'tokyonight',
     statsLayout: 'side-by-side',
-    statsCardEnabled: true,
-    statsShowIcons: true,
-    statsPrivate: false,
-    langsEnabled: true,
-    langsLayout: 'compact',
-    streakEnabled: false,
     trophyEnabled: false,
-    trophyTheme: '',
-    socialEnabled: true,
     socialStyle: 'badges',
-    socialLinks: [
-      { label: 'LinkTree', url: 'https://linktr.ee/CypherPoet', icon: 'linktree', color: '39e09b' }
-    ],
+    socialLinks: [LINKTREE_LINK],
     visitorEnabled: true,
-    collapsibleEnabled: false,
-    collapsibleContent: '',
     dividerStyle: 'hr',
   },
   'badge-wall': {
-    greetingText: '👋 Greetings, fellow human 🧬',
-    subtitleText: '',
-    headerStyle: 'emoji-heading',
-    headerAlign: 'center',
-    aboutEnabled: false,
-    aboutItems: DEFAULTS.aboutItems,
-    aboutLayout: 'bullets',
+    ...DEFAULTS,
     skillsEnabled: true,
     skillsStyle: 'skill-icons',
-    skillsBadgeStyle: 'for-the-badge',
     skillsList: 'Swift,Python,JavaScript,TypeScript,React,SwiftUI,Git,Docker,Firebase,MongoDB,GraphQL,Figma',
-    skillsColor: '',
     statsTheme: 'radical',
-    statsLayout: 'stacked',
-    statsCardEnabled: true,
-    statsShowIcons: true,
-    statsPrivate: false,
-    langsEnabled: true,
     langsLayout: 'donut',
     streakEnabled: true,
     trophyEnabled: false,
-    trophyTheme: '',
-    socialEnabled: true,
     socialStyle: 'badges',
     socialLinks: [
-      { label: 'LinkTree', url: 'https://linktr.ee/CypherPoet', icon: 'linktree', color: '39e09b' },
+      LINKTREE_LINK,
       { label: 'Twitter', url: 'https://twitter.com/CypherPoet', icon: 'twitter', color: '1DA1F2' },
     ],
     visitorEnabled: true,
-    collapsibleEnabled: false,
-    collapsibleContent: '',
     dividerStyle: 'wave',
   },
   'dashboard': {
+    ...DEFAULTS,
     greetingText: "CypherPoet's Dashboard",
     subtitleText: 'Full-stack developer metrics and activity',
     headerStyle: 'plain',
@@ -1320,62 +1250,32 @@ const PRESETS = {
     aboutItems: '🔭 Currently working on iOS and web projects\n🌱 Learning Rust and systems programming\n💬 Ask me about Swift, React, and architecture\n📫 LinkTree: https://linktr.ee/CypherPoet\n⚡ Fun fact: I love cryptography puzzles',
     aboutLayout: 'table',
     skillsEnabled: true,
-    skillsStyle: 'shields',
     skillsBadgeStyle: 'flat-square',
     skillsList: 'Swift,SwiftUI,Python,JavaScript,TypeScript,React,Node.js,Docker,Git,PostgreSQL,Firebase,AWS',
     skillsColor: '0d1117',
     statsTheme: 'github_dark',
     statsLayout: 'side-by-side',
-    statsCardEnabled: true,
-    statsShowIcons: true,
     statsPrivate: true,
-    langsEnabled: true,
-    langsLayout: 'compact',
     streakEnabled: true,
-    trophyEnabled: true,
     trophyTheme: 'darkhub',
-    socialEnabled: true,
     socialStyle: 'badges',
-    socialLinks: [
-      { label: 'LinkTree', url: 'https://linktr.ee/CypherPoet', icon: 'linktree', color: '39e09b' },
-    ],
+    socialLinks: [LINKTREE_LINK],
     visitorEnabled: true,
-    collapsibleEnabled: false,
-    collapsibleContent: '',
     dividerStyle: 'hr',
   },
   'storyteller': {
-    greetingText: '👋 Greetings, fellow human 🧬',
+    ...DEFAULTS,
     subtitleText: "I'm a developer who loves building things that matter.",
-    headerStyle: 'emoji-heading',
     headerAlign: 'left',
     aboutEnabled: true,
     aboutItems: "🔭 I build iOS apps and open-source Swift packages\n🌱 I'm always learning — currently diving deeper into SwiftUI and Combine\n💬 I love discussing software architecture, clean code, and developer tooling\n📫 Find all my links at LinkTree\n⚡ When I'm not coding, you'll find me exploring cryptography and puzzles",
-    aboutLayout: 'bullets',
-    skillsEnabled: false,
-    skillsStyle: 'shields',
-    skillsBadgeStyle: 'for-the-badge',
-    skillsList: DEFAULTS.skillsList,
-    skillsColor: '',
     statsTheme: 'catppuccin_mocha',
-    statsLayout: 'stacked',
-    statsCardEnabled: true,
-    statsShowIcons: true,
-    statsPrivate: false,
     langsEnabled: false,
-    langsLayout: 'compact',
-    streakEnabled: false,
     trophyEnabled: false,
-    trophyTheme: '',
-    socialEnabled: true,
     socialStyle: 'text',
-    socialLinks: [
-      { label: 'LinkTree', url: 'https://linktr.ee/CypherPoet', icon: 'linktree', color: '39e09b' },
-    ],
-    visitorEnabled: false,
+    socialLinks: [LINKTREE_LINK],
     collapsibleEnabled: true,
     collapsibleContent: "### My Journey\n\nI started coding because I was fascinated by how software could turn ideas into reality. Over the years, I've built everything from iOS apps to web platforms, always with a focus on clean architecture and great user experiences.\n\n### What I Value\n\n- **Clarity** over cleverness\n- **Open source** as a way to give back\n- **Continuous learning** — there's always more to discover",
-    dividerStyle: 'none',
   },
 };
 
@@ -1390,8 +1290,7 @@ function applyPreset(name) {
 
 // ── Copy ───────────────────────────────────────────────────
 function copyMarkdown() {
-  const md = generateMarkdown();
-  navigator.clipboard.writeText(md).then(() => {
+  navigator.clipboard.writeText(lastMarkdown).then(() => {
     const btn = document.getElementById('copy-btn');
     btn.textContent = 'Copied!';
     btn.classList.add('copied');

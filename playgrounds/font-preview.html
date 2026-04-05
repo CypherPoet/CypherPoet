@@ -24,11 +24,28 @@
     100% { transform: translateY(100vh); }
   }
 
+  :root {
+    --bg: #08090d;
+    --bg-surface: #0d1117;
+    --bg-raised: #161b22;
+    --bg-input: #21262d;
+    --border: #1a1f28;
+    --border-hover: #30363d;
+    --text: #e6edf3;
+    --text-muted: #8b949e;
+    --text-subtle: #6e7681;
+    --text-dim: #484f58;
+    --accent: #58a6ff;
+    --purple: #bc8cff;
+    --pink: #f778ba;
+    --orange: #ff9a3c;
+  }
+
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
-    background: #08090d;
-    color: #e6edf3;
+    background: var(--bg);
+    color: var(--text);
     font-family: 'Chakra Petch', sans-serif;
     min-height: 100vh;
     overflow-x: hidden;
@@ -68,14 +85,14 @@
   .page-header p {
     margin-top: 10px;
     font-size: 14px;
-    color: #484f58;
+    color: var(--text-dim);
     font-weight: 400;
     letter-spacing: 0.02em;
   }
 
   .page-header p code {
-    color: #6e7681;
-    background: #161b22;
+    color: var(--text-subtle);
+    background: var(--bg-raised);
     padding: 2px 7px;
     border-radius: 4px;
     font-family: 'JetBrains Mono', monospace;
@@ -91,8 +108,8 @@
 
   .card {
     position: relative;
-    background: #0d1117;
-    border: 1px solid #1a1f28;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
     border-radius: 12px;
     overflow: hidden;
     transition: border-color 0.3s, transform 0.2s;
@@ -100,12 +117,12 @@
   }
 
   .card:hover {
-    border-color: #30363d;
+    border-color: var(--border-hover);
     transform: translateY(-2px);
   }
 
   .card:hover .card-preview {
-    border-bottom-color: #21262d;
+    border-bottom-color: var(--bg-input);
   }
 
   .card-preview {
@@ -114,7 +131,7 @@
     align-items: center;
     justify-content: center;
     min-height: 120px;
-    border-bottom: 1px solid #161b22;
+    border-bottom: 1px solid var(--bg-raised);
     position: relative;
     overflow: hidden;
     transition: border-bottom-color 0.3s;
@@ -158,7 +175,7 @@
     font-family: 'JetBrains Mono', monospace;
     font-size: 12px;
     font-weight: 700;
-    color: #58a6ff;
+    color: var(--accent);
     letter-spacing: 0.04em;
   }
 
@@ -180,13 +197,13 @@
 
   .tag-mono {
     background: rgba(88,166,255,0.1);
-    color: #58a6ff;
+    color: var(--accent);
     border: 1px solid rgba(88,166,255,0.2);
   }
 
   .tag-display {
     background: rgba(188,140,255,0.1);
-    color: #bc8cff;
+    color: var(--purple);
     border: 1px solid rgba(188,140,255,0.2);
   }
 
@@ -204,7 +221,7 @@
 
   .font-note {
     font-size: 11px;
-    color: #484f58;
+    color: var(--text-dim);
     font-family: 'Chakra Petch', sans-serif;
   }
 
@@ -216,7 +233,7 @@
     font-family: 'Orbitron', sans-serif;
     font-size: 9px;
     letter-spacing: 0.15em;
-    color: #0d1117;
+    color: var(--bg-surface);
     background: linear-gradient(135deg, #58a6ff, #bc8cff);
     padding: 4px 10px;
     border-radius: 4px;
@@ -230,7 +247,7 @@
     font-size: 10px;
     letter-spacing: 0.25em;
     text-transform: uppercase;
-    color: #30363d;
+    color: var(--border-hover);
     display: flex;
     align-items: center;
     gap: 16px;
@@ -240,29 +257,29 @@
     content: '';
     flex: 1;
     height: 1px;
-    background: linear-gradient(90deg, #1a1f28, transparent);
+    background: linear-gradient(90deg, var(--border), transparent);
   }
 
   .implementation-note {
     margin: 0 40px 16px;
     padding: 16px 20px;
-    background: #161b22;
-    border: 1px solid #21262d;
+    background: var(--bg-raised);
+    border: 1px solid var(--bg-input);
     border-radius: 8px;
-    border-left: 3px solid #58a6ff;
+    border-left: 3px solid var(--accent);
   }
 
   .implementation-note h3 {
     font-family: 'Orbitron', sans-serif;
     font-size: 10px;
     letter-spacing: 0.2em;
-    color: #58a6ff;
+    color: var(--accent);
     margin-bottom: 8px;
   }
 
   .implementation-note p {
     font-size: 13px;
-    color: #8b949e;
+    color: var(--text-muted);
     line-height: 1.6;
     font-family: 'Chakra Petch', sans-serif;
   }
@@ -270,10 +287,10 @@
   .implementation-note code {
     font-family: 'JetBrains Mono', monospace;
     font-size: 12px;
-    background: #0d1117;
+    background: var(--bg-surface);
     padding: 2px 6px;
     border-radius: 3px;
-    color: #bc8cff;
+    color: var(--purple);
   }
 </style>
 </head>
