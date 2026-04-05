@@ -1,4 +1,6 @@
-## 👋 Greetings, fellow human 🧬
+![👋 Greetings, fellow human 🧬](./assets/header-gradient.svg)
+
+![butterflies](./assets/boids-butterflies.svg)
 
 👉 [![LinkTree](https://img.shields.io/badge/LinkTree-43E55E?style=for-the-badge&logo=linktree&logoColor=white)](https://linktr.ee/CypherPoet)
 
