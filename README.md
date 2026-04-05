@@ -32,4 +32,4 @@
 
 ![GitHub stats](./profile/stats.svg)
 ![Top Langs](./profile/top-langs.svg)
-[![trophy](https://github-profile-trophy.vercel.app/?username=CypherPoet)](https://github.com/ryo-ma/github-profile-trophy)
+[![trophy](./profile/trophy.svg)](https://github.com/ryo-ma/github-profile-trophy)
