@@ -20,6 +20,10 @@ A self-contained, single-file vanilla JavaScript application (no frameworks, no 
 
 Key functions: `generateMarkdown()` orchestrates markdown creation, `renderPreview()` renders it with GitHub styling, `updateAll()` ties UI state to output. Social links are managed dynamically via `renderSocialList()`.
 
+## Lessons
+
+- When referencing a GitHub Action, verify the exact published tag (e.g. check the repo's tags/releases) instead of assuming a `@v1` floating tag exists. Not all action maintainers publish floating major-version tags — some only publish exact versions like `v1.0`.
+
 ## Development
 
 No build system, package manager, tests, or linting. To preview the playground locally:
