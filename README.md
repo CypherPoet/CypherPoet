@@ -1,4 +1,4 @@
-![👋 Greetings, fellow human 🧬](./assets/header/header-rubik-microbe.svg)
+![👋 Greetings, fellow traveler 🧬](./assets/header/header-rubik-microbe.svg)
 
 <br/>
 
