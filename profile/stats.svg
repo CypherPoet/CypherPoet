@@ -9,7 +9,7 @@
         aria-labelledby="descId"
       >
         <title id="titleId">CypherPoet&#39;s GitHub Stats, Rank: A+</title>
-        <desc id="descId">Total Stars Earned: 865, Total Commits  (last year) : 499, Total PRs: 714, Total Issues: 248, Contributed to (last year): 11</desc>
+        <desc id="descId">Total Stars Earned: 863, Total Commits  (last year) : 499, Total PRs: 715, Total Issues: 248, Contributed to (last year): 11</desc>
         <style>
           .header {
             font: 600 18px 'Segoe UI', Ubuntu, Sans-Serif;
@@ -73,7 +73,7 @@
         stroke-dashoffset: 251.32741228718345;
       }
       to {
-        stroke-dashoffset: 17.380564035219976;
+        stroke-dashoffset: 17.390548838664046;
       }
     }
   
@@ -162,7 +162,7 @@
         x="224.01"
         y="12.5"
         data-testid="stars"
-      >865</text>
+      >863</text>
     </g>
   </g><g transform="translate(0, 25)">
     <g class="stagger" style="animation-delay: 600ms" transform="translate(25, 0)">
@@ -192,7 +192,7 @@
         x="224.01"
         y="12.5"
         data-testid="prs"
-      >714</text>
+      >715</text>
     </g>
   </g><g transform="translate(0, 75)">
     <g class="stagger" style="animation-delay: 900ms" transform="translate(25, 0)">
